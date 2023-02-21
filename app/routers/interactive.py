@@ -1,8 +1,16 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-router = APIRouter()
+
+from ..dependancies import get_model
+
+router = APIRouter(
+    dependencies=[Depends(get_model)],
+    tags=["interactive"],
+    responses={404: {"description": "Not Found"}},
+)
 
 
 @router.get("/interactive")
-async def classifiy_one():
-    return {"categories": ["dummy", "dummy"]}
+async def classifiy_one(abstract: str):
+    model = get_model()
+    return {"categories": model.predict([abstract])}
