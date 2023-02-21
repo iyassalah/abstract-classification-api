@@ -1,3 +1,4 @@
+"""Router for batch (multiple abstract) API"""
 from fastapi import APIRouter
 
 router = APIRouter(
