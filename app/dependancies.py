@@ -1,6 +1,5 @@
 """"Shared module"""
 import random
-from typing import List
 
 class Classifier():
     """Dummy class
@@ -9,7 +8,7 @@ class Classifier():
         Classifier: class that contains the dummy model
     """
     classes = ['cs.ML', 'cs.AI', 'cs.LG']
-    def predict(self, X: List[str]) -> List[str]:
+    def predict(self, X: list[str]) -> list[str]:
         """Return dummy 
 
         Args:
