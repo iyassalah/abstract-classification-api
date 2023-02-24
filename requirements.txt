@@ -1,2 +1,4 @@
 fastapi==0.92.0
 pydantic==1.10.5
+mypy==1.0.1 
+mypy-extensions==1.0.0
