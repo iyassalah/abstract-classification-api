@@ -22,4 +22,4 @@ async def classifiy_one(single_abstract: InteractiveModel):
         List[str]: List of predicted categories for this abstract.
     """
     model = get_model()
-    return {"categories": model.predict([single_abstract.abstract])}
+    return {"categories": model.predict_one(single_abstract.abstract)}
