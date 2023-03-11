@@ -10,8 +10,6 @@ class __classifier:
         Classifier: the classifier wrapped in a helper class.
     """
 
-    classes = ["cs.ML", "cs.AI", "cs.LG"]
-
     def __init__(self):
         model_name = os.getenv("MODEL") if os.getenv("MODEL") else "model.joblib"
         mlb_name = os.getenv("MLB") if os.getenv("MLB") else "mlb.joblib"
