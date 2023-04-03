@@ -33,7 +33,6 @@ class __classifier:
 
 __model = __classifier()
 
-
 def get_model():
     """Returns an instance of a classifier model
 

@@ -1,7 +1,6 @@
 """Entry point for the app, run this using uvicorn"""
 from dotenv import load_dotenv
 from fastapi import FastAPI
-
 from .routers import batch, interactive
 
 load_dotenv('../.env.dev')
