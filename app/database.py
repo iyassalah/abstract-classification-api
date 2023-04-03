@@ -1,7 +1,6 @@
-'''Any type'''
-from typing import Any
+'''database connection'''
 from pymongo import MongoClient
 from .settings import MONGODB_URL
 
-client: Any  = MongoClient(MONGODB_URL)
+client: MongoClient = MongoClient(MONGODB_URL)
 db = client.mydatabase
