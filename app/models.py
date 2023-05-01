@@ -10,6 +10,7 @@ class Abstract(BaseModel):
     source: str
     doi: str
     prediction: list[str]
+    auother: str
 
 class Hyperparameter(BaseModel):
     """Hyperparameter class"""
@@ -22,8 +23,7 @@ class Hyperparameter(BaseModel):
 
 class BatchModel(BaseModel):
     """Data model for list of abstracts payload used in batch processing
-    
-    """
+`    """
     abstracts: list[str]
 
 class InteractiveModel(BaseModel):
@@ -35,3 +35,4 @@ class CategoriesModel(BaseModel):
     """Model for the list of predicted categories returned by enpoints
     """
     categories: list[str]
+    
