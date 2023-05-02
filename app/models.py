@@ -20,6 +20,11 @@ class Hyperparameter(BaseModel):
     fn: int
     tn: int
 
+class User(BaseModel):
+    """user schema"""
+    username: str
+    password: str
+    isAdmin: bool
 class BatchModel(BaseModel):
     """Data model for list of abstracts payload used in batch processing
     
@@ -32,6 +37,6 @@ class InteractiveModel(BaseModel):
     abstract: str
 
 class CategoriesModel(BaseModel):
-    """Model for the list of predicted categories returned by enpoints
+    """Model for the list of predicted categories returned by end points
     """
     categories: list[str]

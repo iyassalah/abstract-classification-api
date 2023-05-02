@@ -3,5 +3,8 @@
     "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
     "python.linting.mypyEnabled": true,
-    "python.linting.pylamaEnabled": false
+    "python.linting.pylamaEnabled": false,
+    "cSpell.words": [
+        "fastapi"
+    ]
 }

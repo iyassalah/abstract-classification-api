@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from .routers import batch, interactive
 from fastapi.middleware.cors import CORSMiddleware
+from .database import db  # import the 'db' object from database.py
 
 load_dotenv('../.env.dev')
 
