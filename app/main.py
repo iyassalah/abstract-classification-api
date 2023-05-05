@@ -3,9 +3,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import batch, interactive
-from .admin import admin
-from .models import User
-from .database import db, setup_db_indexes
+from .admin import admin, create_root_admin
+from .database import setup_db_indexes
 
 load_dotenv("../.env.dev")
 
@@ -24,30 +23,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-root_admin = User(
-    username="root", email="root@example.com", password="password", isAdmin=True
-)
-
-
-def create_root_admin():
-    """
-    Create a root admin user.
-
-    Returns:
-    - A dictionary containing the ID of the newly created user.
-    """
-    collection = db.users
-    existing_user = collection.find_one({"username": "root"})
-    if existing_user:
-        print("Root admin user already exists.")
-    else:
-        root_admin_data = root_admin.dict()
-        root_admin_data["isAdmin"] = True
-        collection.insert_one(root_admin_data)
-
 
 create_root_admin()
 setup_db_indexes()
+
 
 @app.get("/")
 async def root():

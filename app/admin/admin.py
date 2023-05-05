@@ -65,3 +65,25 @@ async def login(credentials: HTTPBasicCredentials):
     if not user:
         return {"message": "User not found"}
     return {"message": "Login successful"}
+
+
+root_admin = User(
+    username="root", email="root@example.com", password="password", isAdmin=True
+)
+
+
+def create_root_admin():
+    """
+    Create a root admin user.
+
+    Returns:
+    - A dictionary containing the ID of the newly created user.
+    """
+    collection = db.users
+    existing_user = collection.find_one({"username": "root"})
+    if existing_user:
+        print("Root admin user already exists.")
+    else:
+        root_admin_data = root_admin.dict()
+        root_admin_data["isAdmin"] = True
+        collection.insert_one(root_admin_data)
