@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "ms-python.pylint",
+        "donjayamanne.python-environment-manager",
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github",
+        "usernamehw.errorlens",
+        "njpwerner.autodocstring"
+    ]
+}
