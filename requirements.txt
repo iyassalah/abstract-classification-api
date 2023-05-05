@@ -1,4 +1,7 @@
-fastapi==0.92.0
+fastapi==0.95.1
 pydantic==1.10.5
 mypy==1.0.1 
 mypy-extensions==1.0.0
+joblib==1.1.1
+pymongo==4.3.3
+python-dotenv==1.0.0
