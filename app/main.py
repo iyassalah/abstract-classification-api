@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import batch, interactive
+from .admin import admin
 from .models import User
 from .database import db
 
@@ -12,6 +13,7 @@ app = FastAPI()
 
 app.include_router(batch.router)
 app.include_router(interactive.router)
+app.include_router(admin.router)
 
 #just to be able to send the request in the same machine
 app.add_middleware(

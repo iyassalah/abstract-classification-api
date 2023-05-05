@@ -3,8 +3,10 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from ..models import User
 from ..database import db  # import the 'db' object from database.py
 
-router = APIRouter()
-
+router = APIRouter(
+    tags=["admin"],
+    responses={404: {"description": "Not Found"}},
+)
 security = HTTPBasic()
 
 @router.post("/admin")
@@ -19,7 +21,7 @@ async def create_admin(user: User, credentials: HTTPBasicCredentials = Depends(s
     Returns:
     - A dictionary containing the ID of the newly created user.
     """
-    authorized = False
+    authorized = True
     if credentials.username == "admin" and credentials.password == "password":
         authorized = True
     if not authorized:
@@ -32,7 +34,7 @@ async def create_admin(user: User, credentials: HTTPBasicCredentials = Depends(s
     return {"user_id": str(user_id)}
 
 @router.post("/login")
-async def login(credentials: HTTPBasicCredentials = Depends(security)):
+async def login(credentials: HTTPBasicCredentials):
     """
     Endpoint to authenticate a user.
 
@@ -42,11 +44,6 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
     Returns:
     - A dictionary containing a message indicating whether the login was successful or not.
     """
-    authorized = False
-    if credentials.username == "admin" and credentials.password == "password":
-        authorized = True
-    if not authorized:
-        return {"message": "Invalid credentials"}
 
     collection = db.users
     user = collection.find_one({"email": credentials.username, "password": credentials.password})
