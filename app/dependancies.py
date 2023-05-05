@@ -1,6 +1,8 @@
 """"Shared module"""
 import os
 import joblib
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import MultiLabelBinarizer
 
 
 class __classifier:
@@ -13,8 +15,8 @@ class __classifier:
     def __init__(self):
         model_name = os.getenv("MODEL") if os.getenv("MODEL") else "model.joblib"
         mlb_name = os.getenv("MLB") if os.getenv("MLB") else "mlb.joblib"
-        self.__model = joblib.load(model_name)
-        self.__mlb = joblib.load(mlb_name)
+        self.__model: Pipeline = joblib.load(model_name)
+        self.__mlb: MultiLabelBinarizer = joblib.load(mlb_name)
         print(self.__model)  # TODO: replace with logger
         print(self.__mlb)
 
