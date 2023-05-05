@@ -23,6 +23,7 @@ class Hyperparameter(BaseModel):
 class User(BaseModel):
     """user schema"""
     username: str
+    email: str
     password: str
     isAdmin: bool
 class BatchModel(BaseModel):

@@ -5,6 +5,9 @@
     "python.linting.mypyEnabled": true,
     "python.linting.pylamaEnabled": false,
     "cSpell.words": [
-        "fastapi"
+        "dotenv",
+        "fastapi",
+        "iyas",
+        "uvicorn"
     ]
 }

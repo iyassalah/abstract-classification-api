@@ -1,5 +1,3 @@
-"""admin module."""
-
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from ..models import User
@@ -51,7 +49,7 @@ async def login(credentials: HTTPBasicCredentials = Depends(security)):
         return {"message": "Invalid credentials"}
 
     collection = db.users
-    user = collection.find_one({"username": credentials.username, "password": credentials.password})
+    user = collection.find_one({"email": credentials.username, "password": credentials.password})
     if not user:
         return {"message": "User not found"}
     return {"message": "Login successful"}

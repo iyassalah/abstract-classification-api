@@ -1,9 +1,10 @@
 """Entry point for the app, run this using uvicorn"""
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from .routers import batch, interactive
 from fastapi.middleware.cors import CORSMiddleware
-from .database import db  # import the 'db' object from database.py
+from .routers import batch, interactive
+from .models import User
+from .database import db
 
 load_dotenv('../.env.dev')
 
@@ -21,7 +22,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+root_admin = User(username="root", email="root@example.com", password="password", isAdmin=True)
+
+def create_root_admin():
+    """
+    Create a root admin user.
+
+    Returns:
+    - A dictionary containing the ID of the newly created user.
+    """
+    collection = db.users
+    existing_user = collection.find_one({"username": "root"})
+    if existing_user:
+        print("Root admin user already exists.")
+    else:
+        root_admin_data = root_admin.dict()
+        root_admin_data["isAdmin"] = True
+        collection.insert_one(root_admin_data)
+
+create_root_admin()
+
 @app.get("/")
 async def root():
-    """TODO: add things here"""
+    """
+        root module
+    """
+
     return {"message": "hi"}

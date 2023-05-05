@@ -1,4 +1,2 @@
-""""Routers package"""
-from fastapi import APIRouter
-
-router = APIRouter()
+"""init package"""
+from .admin import create_admin
