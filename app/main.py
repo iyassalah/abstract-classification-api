@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routers import batch, interactive
 from .admin import admin
 from .models import User
-from .database import db
+from .database import db, setup_db_indexes
 
 load_dotenv("../.env.dev")
 
@@ -47,7 +47,7 @@ def create_root_admin():
 
 
 create_root_admin()
-
+setup_db_indexes()
 
 @app.get("/")
 async def root():

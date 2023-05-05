@@ -1,5 +1,8 @@
-from fastapi import APIRouter, Depends
+"""Admin module for the subset of users who have admin permissions"""
+from fastapi import APIRouter, Depends, exceptions
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from pymongo.collection import Collection
+from pymongo.errors import DuplicateKeyError
 from ..models import User
 from ..database import db  # import the 'db' object from database.py
 
@@ -30,10 +33,16 @@ async def create_admin(
     if not authorized:
         return {"message": "Invalid credentials"}
 
+    collection: Collection = db.users
+
     user_data = user.dict()
     user_data["isAdmin"] = True
-    collection = db.users
-    user_id = collection.insert_one(user_data).inserted_id
+    try:
+        user_id = collection.insert_one(user_data).inserted_id
+    except DuplicateKeyError:
+        raise exceptions.HTTPException(
+            status_code=409, detail="Username already exists"
+        ) from None
     return {"user_id": str(user_id)}
 
 
