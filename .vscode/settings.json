@@ -9,5 +9,8 @@
         "fastapi",
         "iyas",
         "uvicorn"
-    ]
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    }
 }

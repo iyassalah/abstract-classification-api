@@ -7,7 +7,7 @@ from .admin import admin
 from .models import User
 from .database import db
 
-load_dotenv('../.env.dev')
+load_dotenv("../.env.dev")
 
 app = FastAPI()
 
@@ -15,7 +15,7 @@ app.include_router(batch.router)
 app.include_router(interactive.router)
 app.include_router(admin.router)
 
-#just to be able to send the request in the same machine
+# just to be able to send the request in the same machine
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,7 +24,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-root_admin = User(username="root", email="root@example.com", password="password", isAdmin=True)
+root_admin = User(
+    username="root", email="root@example.com", password="password", isAdmin=True
+)
+
 
 def create_root_admin():
     """
@@ -42,12 +45,14 @@ def create_root_admin():
         root_admin_data["isAdmin"] = True
         collection.insert_one(root_admin_data)
 
+
 create_root_admin()
+
 
 @app.get("/")
 async def root():
     """
-        root module
+    root module
     """
 
     return {"message": "hi"}

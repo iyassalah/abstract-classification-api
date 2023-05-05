@@ -9,8 +9,11 @@ router = APIRouter(
 )
 security = HTTPBasic()
 
+
 @router.post("/admin")
-async def create_admin(user: User, credentials: HTTPBasicCredentials = Depends(security)):
+async def create_admin(
+    user: User, credentials: HTTPBasicCredentials = Depends(security)
+):
     """
     Endpoint to create a new admin user.
 
@@ -33,6 +36,7 @@ async def create_admin(user: User, credentials: HTTPBasicCredentials = Depends(s
     user_id = collection.insert_one(user_data).inserted_id
     return {"user_id": str(user_id)}
 
+
 @router.post("/login")
 async def login(credentials: HTTPBasicCredentials):
     """
@@ -46,7 +50,9 @@ async def login(credentials: HTTPBasicCredentials):
     """
 
     collection = db.users
-    user = collection.find_one({"email": credentials.username, "password": credentials.password})
+    user = collection.find_one(
+        {"email": credentials.username, "password": credentials.password}
+    )
     if not user:
         return {"message": "User not found"}
     return {"message": "Login successful"}
