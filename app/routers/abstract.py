@@ -3,7 +3,7 @@
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException
 from ..database import db
-from ..models import Abstract
+from ..schema import Abstract
 
 router = APIRouter(prefix="/Abstract")
 

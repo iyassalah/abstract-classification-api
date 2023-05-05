@@ -3,7 +3,7 @@
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException
 from ..database import db
-from ..models import Hyperparameter
+from ..schema import Hyperparameter
 
 router = APIRouter(prefix="/Hyperparameter")
 
