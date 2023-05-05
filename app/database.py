@@ -1,8 +1,9 @@
 """database connection"""
+import os
 from pymongo import MongoClient, collection
-from .settings import MONGODB_URL
 
-client: MongoClient = MongoClient(MONGODB_URL)
+path = os.getenv('MONGODB_URL') or 'mongodb://localhost:27017/'
+client: MongoClient = MongoClient(path)
 db = client.abstractsClassificationSystem
 
 

@@ -6,7 +6,7 @@ from .routers import batch, interactive
 from .admin import admin, create_root_admin
 from .database import setup_db_indexes
 
-load_dotenv("../.env.dev")
+load_dotenv("../.env.dev", verbose=True)
 
 app = FastAPI()
 
