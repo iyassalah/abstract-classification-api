@@ -32,7 +32,9 @@ class __classifier:
         prediction = self.__model.predict([X])
         return self.__mlb.inverse_transform(prediction)[0]
 
+
 __model = __classifier()
+
 
 def get_model():
     """Returns an instance of a classifier model

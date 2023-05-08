@@ -3,5 +3,14 @@
     "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
     "python.linting.mypyEnabled": true,
-    "python.linting.pylamaEnabled": false
+    "python.linting.pylamaEnabled": false,
+    "cSpell.words": [
+        "dotenv",
+        "fastapi",
+        "iyas",
+        "uvicorn"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    }
 }

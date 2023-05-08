@@ -1,17 +1,20 @@
 """Entry point for the app, run this using uvicorn"""
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from .routers import batch, interactive
 from fastapi.middleware.cors import CORSMiddleware
+from .routers import batch, interactive
+from .admin import admin, create_root_admin
+from .database import setup_db_indexes
 
-load_dotenv('../.env.dev')
+load_dotenv("../.env.dev", verbose=True)
 
 app = FastAPI()
 
 app.include_router(batch.router)
 app.include_router(interactive.router)
+app.include_router(admin.router)
 
-#just to be able to send the request in the same machine
+# just to be able to send the request in the same machine
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,7 +23,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+create_root_admin()
+setup_db_indexes()
+
+
 @app.get("/")
 async def root():
-    """TODO: add things here"""
+    """
+    root module
+    """
+
     return {"message": "hi"}
