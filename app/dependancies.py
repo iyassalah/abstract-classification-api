@@ -1,9 +1,9 @@
 """"Shared module"""
-import os
 from typing import Annotated
 import joblib
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MultiLabelBinarizer
+from .config import settings
 
 
 Probabilities = dict[str, Annotated[list[float], 2]]
@@ -17,8 +17,8 @@ class __classifier:
     """
 
     def __init__(self):
-        model_name = os.getenv("MODEL") if os.getenv("MODEL") else "model.joblib"
-        mlb_name = os.getenv("MLB") if os.getenv("MLB") else "mlb.joblib"
+        model_name = settings.MODEL
+        mlb_name = settings.MLB
         self.__model: Pipeline = joblib.load(model_name)
         self.__mlb: MultiLabelBinarizer = joblib.load(mlb_name)
         print(self.__model)  # TODO: replace with logger

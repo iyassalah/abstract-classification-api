@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routers import batch, interactive
 from .admin import admin, create_root_admin
 from .database import setup_db_indexes
-from .config import load_configs
 
 
 app = FastAPI()
@@ -26,7 +25,6 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event():
     """load the configs, configure the DB"""
-    load_configs()
     setup_db_indexes()
     create_root_admin()
 

@@ -1,23 +1,33 @@
 """For loading and validating configs"""
 import os
-from dotenv import load_dotenv
+from typing import Literal
+from pydantic import BaseSettings, MongoDsn, FilePath, SecretStr
 
+__env_mode = os.getenv("ENVIRONMENT")
+__base_dir = os.path.abspath(os.path.dirname(__file__))
+__files = [".env"]
 
-def load_configs():
-    env_mode = os.getenv("ENVIRONMENT")
-    base_dir = os.path.abspath(os.path.dirname(__file__))
-    files = [".env"]
-
-    if env_mode == "development":
-        files = [".env.dev.local", ".env.local", ".env.dev"] + files
-    elif env_mode == "production":
-        files = [".env.prod.local", ".env.local", ".env.prod"] + files
-    else:
+if __env_mode == "production":
+    __files = [".env.prod.local", ".env.local", ".env.prod"] + __files
+else:
+    __files = [".env.dev.local", ".env.local", ".env.dev"] + __files
+    if not __env_mode:
         print("Could not identify environment ($ENVIRONMENT), assuming development")
-        files = [".env.dev.local", ".env.local", ".env.dev"] + files
 
-    for file in files:
-        if not load_dotenv(os.path.join(base_dir, f"../{file}"), verbose=True):
-            print(f"{file} not found")  # TODO: Log this with INFO level
 
-    print("Priority environment:", os.getenv("PRIORITY_FLAG"))
+class Settings(BaseSettings):
+    PRIORITY_FLAG: Literal[
+        ".env.dev.local", ".env.dev", ".env.local", ".env.prod.local", ".env.prod"
+    ]
+    MONGODB_URL: MongoDsn
+    SECRET_KEY: SecretStr
+    MODEL: FilePath
+    MLB: FilePath
+
+
+settings = Settings(
+    _env_file=tuple(os.path.join(__base_dir, f"../{file}") for file in __files),
+    _env_file_encoding="utf-8",
+)
+
+print("Priority environment:", settings.PRIORITY_FLAG)
