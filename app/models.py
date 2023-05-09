@@ -18,3 +18,12 @@ class CategoriesModel(BaseModel):
     """Model for the list of predicted categories returned by end points"""
 
     categories: list[str]
+
+
+class User(BaseModel):
+    """User datamodel"""
+
+    username: str
+    email: str
+    password: str
+    isAdmin: bool

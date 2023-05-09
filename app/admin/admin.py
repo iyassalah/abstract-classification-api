@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, exceptions
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pymongo.collection import Collection
 from pymongo.errors import DuplicateKeyError
-from ..schema import User
+from ..models import User
 from ..database import db
 
 router = APIRouter(

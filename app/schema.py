@@ -1,5 +1,6 @@
 """DB Schema definitions for pymongo"""
 from datetime import datetime
+from typing import TypedDict
 from pydantic import BaseModel
 
 
@@ -15,7 +16,7 @@ class Abstract(BaseModel):
 
 
 class Hyperparameter(BaseModel):
-    """Hyperparameter class"""
+    """Hyperparameter schema"""
 
     created: datetime
     params: object
@@ -25,8 +26,8 @@ class Hyperparameter(BaseModel):
     tn: int
 
 
-class User(BaseModel):
-    """user schema"""
+class UserSchema(TypedDict):
+    """User schema"""
 
     username: str
     email: str
