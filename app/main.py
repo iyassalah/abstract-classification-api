@@ -1,10 +1,10 @@
 """Entry point for the app, run this using uvicorn"""
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import batch, interactive
 from .admin import admin, create_root_admin
 from .database import setup_db_indexes
+from .config import load_configs
 
 
 app = FastAPI()
@@ -22,11 +22,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.on_event('startup')
+
+@app.on_event("startup")
 async def startup_event():
-    """load the configs here"""
+    """load the configs, configure the DB"""
+    load_configs()
     setup_db_indexes()
-    load_dotenv("../.env.dev", verbose=True)
     create_root_admin()
 
 

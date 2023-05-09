@@ -130,3 +130,6 @@ dmypy.json
 
 # joblib
 *.joblib
+
+# Local configs
+.env*.local
