@@ -29,6 +29,7 @@ Local config files are ignored by git, a priority flag is added to some files to
 3. *pylint* for error and style linting.
 4. *pylama*, because why not?
 5. *venv*
+6. `pipreqs`, with `python -m pipreqs.pipreqs app --force --encoding=utf-8`
 
 ## Tech stack
 
