@@ -2,7 +2,7 @@
 import os
 from pymongo import MongoClient, collection
 
-path = os.getenv('MONGODB_URL') or 'mongodb://localhost:27017/'
+path = os.getenv("MONGODB_URL") or "mongodb://localhost:27017/"
 client: MongoClient = MongoClient(path)
 db = client.abstractsClassificationSystem
 
