@@ -26,7 +26,7 @@ __pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 __oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-router = APIRouter(tags=["auth"])
+router = APIRouter(tags=["auth"], prefix="/auth")
 
 
 def verify_password(plain_password, hashed_password):
@@ -89,7 +89,7 @@ async def get_current_user(token: Annotated[str, Depends(__oauth2_scheme)]):
     return user
 
 
-@router.post("/login", response_model=Token)
+@router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):

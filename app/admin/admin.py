@@ -9,11 +9,12 @@ from ..database import db
 router = APIRouter(
     tags=["admin"],
     responses={404: {"description": "Not Found"}},
+    prefix='/admin'
 )
 security = HTTPBasic()
 
 
-@router.post("/admin")
+@router.post("/create")
 async def create_admin(
     user: User, credentials: HTTPBasicCredentials = Depends(security)
 ):
