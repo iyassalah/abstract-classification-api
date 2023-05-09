@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends
 
 from ..models import InteractiveModel, CategoriesModel
-from ..dependancies import get_model, Probabilities
+from ..classifier import get_model, Probabilities
 
 router = APIRouter(
     dependencies=[Depends(get_model)],
