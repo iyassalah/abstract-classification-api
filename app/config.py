@@ -1,7 +1,7 @@
 """For loading and validating configs"""
 import os
 from typing import Literal
-from pydantic import BaseSettings, MongoDsn, FilePath, SecretStr
+from pydantic import BaseSettings, MongoDsn, FilePath, SecretStr, PositiveFloat
 
 __env_mode = os.getenv("ENVIRONMENT")
 __base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     SECRET_KEY: SecretStr
     MODEL: FilePath
     MLB: FilePath
+    ACCESS_TOKEN_EXPIRE_MINUTES: PositiveFloat
+    ALGORITHM: str
+
 
 
 settings = Settings(

@@ -1,5 +1,4 @@
 """Module to handle auth"""
-import os
 from datetime import datetime, timedelta
 from typing import Annotated
 
@@ -11,12 +10,7 @@ from pydantic import BaseModel
 
 
 from ..database import users_col, create_user
-
-__SECRET_KEY = os.getenv("SECRET_KEY")
-__ALGORITHM = os.getenv("ALGORITHM")
-__ACCESS_TOKEN_EXPIRE_MINUTES: float
-if expiry := os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"):
-    __ACCESS_TOKEN_EXPIRE_MINUTES = float(expiry)
+from ..config import settings
 
 
 class Token(BaseModel):
@@ -51,7 +45,7 @@ def authenticate_user(username: str, password: str):
     user = get_user(username)
     if not user:
         return False
-    if not verify_password(password, user["username"]):
+    if not verify_password(password, user["password"]):
         return False
     return user
 
@@ -63,7 +57,9 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, __SECRET_KEY, algorithm=__ALGORITHM)
+    encoded_jwt = jwt.encode(
+        to_encode, settings.SECRET_KEY.get_secret_value(), algorithm=settings.ALGORITHM
+    )
     return encoded_jwt
 
 
@@ -74,7 +70,11 @@ async def get_current_user(token: Annotated[str, Depends(__oauth2_scheme)]):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, __SECRET_KEY, algorithms=[__ALGORITHM])
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY.get_secret_value(),
+            algorithms=[settings.ALGORITHM],
+        )
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -89,7 +89,7 @@ async def get_current_user(token: Annotated[str, Depends(__oauth2_scheme)]):
     return user
 
 
-@router.post("/token", response_model=Token)
+@router.post("/login", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
@@ -100,7 +100,7 @@ async def login_for_access_token(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=__ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user["username"]}, expires_delta=access_token_expires
     )
@@ -109,7 +109,7 @@ async def login_for_access_token(
 
 @router.post("/create", response_model=Token)
 async def add_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    access_token_expires = timedelta(minutes=__ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": form_data.username}, expires_delta=access_token_expires
     )
@@ -118,7 +118,8 @@ async def add_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
             "username": form_data.username,
             "email": "",
             "isAdmin": False,
-            "password": access_token,
+            "password": get_password_hash(form_data.password),
+            "token": [access_token],
         }
     )
     return {"access_token": access_token, "token_type": "bearer"}
