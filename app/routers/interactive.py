@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends
 
 from ..models import InteractiveModel, CategoriesModel
-from ..dependancies import get_model
+from ..dependancies import get_model, Probabilities
 
 router = APIRouter(
     dependencies=[Depends(get_model)],
@@ -11,7 +11,9 @@ router = APIRouter(
 )
 
 
-@router.post("/interactive", summary="Classify one abstract", response_model=CategoriesModel)
+@router.post(
+    "/interactive", summary="Classify one abstract", response_model=CategoriesModel
+)
 async def classifiy_one(single_abstract: InteractiveModel):
     """_summary_
 
@@ -23,3 +25,21 @@ async def classifiy_one(single_abstract: InteractiveModel):
     """
     model = get_model()
     return {"categories": model.predict_one(single_abstract.abstract)}
+
+
+@router.post(
+    "/interactive/proba", summary="Classify one abstract and get label probabilities"
+)
+async def classifiy_one_proba(
+    single_abstract: InteractiveModel,
+) -> Probabilities:
+    """_summary_
+
+    Args:
+        abstract (str): Abstract to be classified
+
+    Returns:
+        Probabilities
+    """
+    model = get_model()
+    return model.predict_proba_one(single_abstract.abstract)

@@ -1,8 +1,12 @@
 """"Shared module"""
 import os
+from typing import Annotated
 import joblib
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MultiLabelBinarizer
+
+
+Probabilities = dict[str, Annotated[list[float], 2]]
 
 
 class __classifier:
@@ -21,16 +25,32 @@ class __classifier:
         print(self.__mlb)
 
     def predict_one(self, X: str) -> list[str]:
-        """Classify an abstracts
+        """Classify an abstract
 
         Args:
-            X (List[str]): List of abstracts to classify
+            X (str): Abstract to classify
 
         Returns:
             List[str]: List of categories as strings
         """
         prediction = self.__model.predict([X])
         return self.__mlb.inverse_transform(prediction)[0]
+
+    def predict_proba_one(self, X: str) -> Probabilities:
+        """Classify an abstract
+
+        Args:
+            X (str): Abstract to classify
+
+        Returns:
+            dict[str, Annotated[list[float], 2]]: List label probabilities
+        """
+        return {
+            label: proba.tolist()[0]
+            for proba, label in zip(
+                self.__model.predict_proba([X]), self.__mlb.classes_
+            )
+        }
 
 
 __model = __classifier()
