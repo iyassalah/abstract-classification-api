@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     PRIORITY_FLAG: Literal[
         ".env.dev.local", ".env.dev", ".env.local", ".env.prod.local", ".env.prod"
     ]
-    MONGODB_URL: MongoDsn
+    MONGODB_URL: str
     SECRET_KEY: SecretStr
     MODEL: FilePath
     MLB: FilePath
