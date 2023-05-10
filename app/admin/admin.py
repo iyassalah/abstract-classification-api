@@ -11,7 +11,8 @@ from ..schema import UserSchema
 from ..crud import create_user
 
 router = APIRouter(
-    tags=["admin"],
+    tags=["admin", "protected"],
+    prefix='/admin',
     responses={404: {"description": "Not Found"}},
     dependencies=[Depends(get_current_user)],
 )
@@ -22,7 +23,7 @@ class CreateAdmin(BaseModel):
     new_user: User
 
 
-@router.post("/admin")
+@router.post("/")
 async def create_admin(create_admin_dto: User):
     """Creates a new admin, requires the user to be logged in as an admin.
 
