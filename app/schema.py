@@ -1,6 +1,6 @@
 """DB Schema definitions for pymongo"""
 from datetime import datetime
-from typing import TypedDict, Optional
+from typing_extensions import NotRequired, TypedDict
 from pydantic import BaseModel
 
 
@@ -33,4 +33,4 @@ class UserSchema(TypedDict):
     email: str
     password: str
     isAdmin: bool
-    token: Optional[list[str]]
+    token: NotRequired[list[str]]

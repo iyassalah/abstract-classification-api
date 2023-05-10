@@ -1,5 +1,6 @@
 """Pydantic datamodels"""
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+import typing
 
 
 class BatchModel(BaseModel):
@@ -24,6 +25,6 @@ class User(BaseModel):
     """User datamodel"""
 
     username: str
-    email: str
+    email: EmailStr
     password: str
     isAdmin: bool

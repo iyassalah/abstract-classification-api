@@ -1,69 +1,25 @@
 """Module to handle auth"""
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Annotated
 
 from fastapi import Depends, APIRouter, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt
-from passlib.context import CryptContext
-from pydantic import BaseModel
+from fastapi.security import OAuth2PasswordRequestForm
+from jose import JWTError, jwt, ExpiredSignatureError
 
 
-from ..database import users_col, create_user
+from ..crud import create_user, get_user, authenticate_user
+from ..dependancies import (
+    oauth2_scheme,
+    TokenData,
+    Token,
+    create_access_token,
+)
 from ..config import settings
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    username: str | None = None
-
-
-__pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-__oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter(tags=["auth"], prefix="/auth")
 
 
-def verify_password(plain_password, hashed_password):
-    return __pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    return __pwd_context.hash(password)
-
-
-def get_user(username: str):
-    return users_col.find_one({"username": username})
-
-
-def authenticate_user(username: str, password: str):
-    user = get_user(username)
-    if not user:
-        return False
-    if not verify_password(password, user["password"]):
-        return False
-    return user
-
-
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(
-        to_encode, settings.SECRET_KEY.get_secret_value(), algorithm=settings.ALGORITHM
-    )
-    return encoded_jwt
-
-
-async def get_current_user(token: Annotated[str, Depends(__oauth2_scheme)]):
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -79,6 +35,8 @@ async def get_current_user(token: Annotated[str, Depends(__oauth2_scheme)]):
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=403, detail="token has been expired") from None
     except JWTError:
         raise credentials_exception from None
     if not token_data.username:
@@ -118,7 +76,7 @@ async def add_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
             "username": form_data.username,
             "email": "",
             "isAdmin": False,
-            "password": get_password_hash(form_data.password),
+            "password": form_data.password,
             "token": [access_token],
         }
     )
