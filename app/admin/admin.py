@@ -1,22 +1,35 @@
-"""Admin module for the subset of users who have admin permissions"""
 from fastapi import APIRouter, Depends, exceptions
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pymongo.collection import Collection
 from pymongo.errors import DuplicateKeyError
-from ..models import User
-from ..database import db
+from ..schema import UserSchema
+from datetime import datetime, timedelta
+from jose import jwt, JWTError
+
 
 router = APIRouter(
     tags=["admin"],
     responses={404: {"description": "Not Found"}},
-    prefix='/admin'
 )
 security = HTTPBasic()
 
+# JWT settings
+SECRET_KEY = "mysecretkey"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-@router.post("/create")
+
+def create_access_token(data: dict, expires_delta: timedelta):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + expires_delta
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+@router.post("/admin")
 async def create_admin(
-    user: User, credentials: HTTPBasicCredentials = Depends(security)
+    user: UserSchema, credentials: HTTPBasicCredentials = Depends(security)
 ):
     """
     Endpoint to create a new admin user.
@@ -50,13 +63,13 @@ async def create_admin(
 @router.post("/login")
 async def login(credentials: HTTPBasicCredentials):
     """
-    Endpoint to authenticate a user.
+    Endpoint to authenticate a user and generate a JWT token.
 
     Parameters:
     - `credentials`: An `HTTPBasicCredentials` object containing the user credentials.
 
     Returns:
-    - A dictionary containing a message indicating whether the login was successful or not.
+    - A dictionary containing a message indicating whether the login was successful or not and a JWT token.
     """
 
     collection = db.users
@@ -65,10 +78,16 @@ async def login(credentials: HTTPBasicCredentials):
     )
     if not user:
         return {"message": "User not found"}
-    return {"message": "Login successful"}
+
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user["email"]}, expires_delta=access_token_expires
+    )
+
+    return {"message": "Login successful", "access_token": access_token}
 
 
-root_admin = User(
+root_admin = UserSchema(
     username="root", email="root@example.com", password="password", isAdmin=True
 )
 
