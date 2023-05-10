@@ -1,8 +1,8 @@
 """Router for interactive (single abstract) input"""
 from fastapi import APIRouter, Depends
 
-from ..models import InteractiveModel, CategoriesModel
-from ..classifier import get_model, Probabilities
+from ..classifier import Probabilities, get_model
+from ..models import CategoriesModel, InteractiveModel
 
 router = APIRouter(
     dependencies=[Depends(get_model)],

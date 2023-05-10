@@ -1,7 +1,8 @@
 """For loading and validating configs"""
 import os
 from typing import Literal
-from pydantic import BaseSettings, FilePath, SecretStr, PositiveFloat
+
+from pydantic import BaseSettings, FilePath, PositiveFloat, SecretStr
 
 __env_mode = os.getenv("ENVIRONMENT")
 __base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -25,7 +26,6 @@ class Settings(BaseSettings):
     MLB: FilePath
     ACCESS_TOKEN_EXPIRE_MINUTES: PositiveFloat
     ALGORITHM: str
-
 
 
 settings = Settings(

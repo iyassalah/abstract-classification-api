@@ -2,19 +2,13 @@
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import Depends, APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from jose import JWTError, jwt, ExpiredSignatureError
+from jose import ExpiredSignatureError, JWTError, jwt
 
-
-from ..crud import create_user, get_user, authenticate_user
-from ..dependancies import (
-    oauth2_scheme,
-    TokenData,
-    Token,
-    create_access_token,
-)
 from ..config import settings
+from ..crud import authenticate_user, create_user, get_user
+from ..dependancies import Token, TokenData, create_access_token, oauth2_scheme
 
 router = APIRouter(tags=["auth"], prefix="/auth")
 

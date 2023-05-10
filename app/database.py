@@ -1,8 +1,9 @@
 """database connection"""
 from pymongo import MongoClient
 from pymongo.collection import Collection
-from .schema import UserSchema
+
 from .config import settings
+from .schema import UserSchema
 
 __client: MongoClient = MongoClient(settings.MONGODB_URL)
 db = __client.abstractsClassificationSystem

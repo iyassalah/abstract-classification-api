@@ -1,10 +1,11 @@
 """"Shared module"""
 from typing import Annotated
+
 import joblib
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MultiLabelBinarizer
-from .config import settings
 
+from .config import settings
 
 Probabilities = dict[str, Annotated[list[float], 2]]
 

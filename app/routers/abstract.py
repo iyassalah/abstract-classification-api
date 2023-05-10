@@ -2,10 +2,12 @@
 
 from bson import ObjectId
 from fastapi import APIRouter, HTTPException
+
 from ..database import db
 from ..schema import Abstract
 
 router = APIRouter(prefix="/Abstract")
+
 
 @router.post("/abstact")
 async def create_abstact(abstact: Abstract):
@@ -19,6 +21,7 @@ async def create_abstact(abstact: Abstract):
     """
     result = db.abstacts.insert_one(abstact.dict())
     return {"id": str(result.inserted_id)}
+
 
 @router.get("/{abstact_id}")
 async def read_abstact(abstact_id: str):

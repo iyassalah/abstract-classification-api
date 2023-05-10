@@ -1,6 +1,5 @@
 """Pydantic datamodels"""
 from pydantic import BaseModel, EmailStr
-import typing
 
 
 class BatchModel(BaseModel):

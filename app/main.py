@@ -1,10 +1,10 @@
 """Entry point for the app, run this using uvicorn"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import batch, interactive, auth
+
 from .admin import admin, create_root_admin
 from .database import setup_db_indexes
-
+from .routers import auth, batch, interactive
 
 app = FastAPI()
 

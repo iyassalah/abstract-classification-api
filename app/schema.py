@@ -1,7 +1,8 @@
 """DB Schema definitions for pymongo"""
 from datetime import datetime
-from typing_extensions import NotRequired, TypedDict
+
 from pydantic import BaseModel
+from typing_extensions import NotRequired, TypedDict
 
 
 class Abstract(BaseModel):

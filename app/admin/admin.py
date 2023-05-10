@@ -4,11 +4,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
+from ..crud import create_user
+from ..database import users_col
 from ..models import User
 from ..routers.auth import get_current_user
-from ..database import users_col
 from ..schema import UserSchema
-from ..crud import create_user
 
 router = APIRouter(
     tags=["admin", "protected"],

@@ -2,9 +2,9 @@
 from fastapi import exceptions
 from pymongo.errors import DuplicateKeyError
 
-from .schema import UserSchema
 from .database import users_col
 from .dependancies import pwd_context
+from .schema import UserSchema
 
 
 def get_user(username: str):
