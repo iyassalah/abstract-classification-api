@@ -2,9 +2,6 @@
 import os
 from typing import Literal
 from pydantic import BaseSettings, MongoDsn, FilePath, SecretStr, PositiveFloat
-from dotenv import load_dotenv
-
-load_dotenv()
 
 __env_mode = os.getenv("ENVIRONMENT")
 __base_dir = os.path.abspath(os.path.dirname(__file__))
