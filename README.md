@@ -16,7 +16,7 @@ Local config files are ignored by git, a priority flag is added to some files to
 
 ## How to run
 
-1. Have python 3.11+ installed
+1. Have python 3.10+ installed
 2. Create and activate a virtual environment with `venv`
 3. Run `pip install "fastapi[all]"` to install FastAPI and Uvicorn
 4. In the root directory, run `pip install -r requirements.txt` to install the dependancies.

@@ -1,7 +1,7 @@
 """For loading and validating configs"""
 import os
 from typing import Literal
-from pydantic import BaseSettings, MongoDsn, FilePath, SecretStr, PositiveFloat
+from pydantic import BaseSettings, FilePath, SecretStr, PositiveFloat
 
 __env_mode = os.getenv("ENVIRONMENT")
 __base_dir = os.path.abspath(os.path.dirname(__file__))
