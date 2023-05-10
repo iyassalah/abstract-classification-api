@@ -2,6 +2,9 @@
 import os
 from typing import Literal
 from pydantic import BaseSettings, MongoDsn, FilePath, SecretStr
+from dotenv import load_dotenv
+
+load_dotenv()
 
 __env_mode = os.getenv("ENVIRONMENT")
 __base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -19,7 +22,7 @@ class Settings(BaseSettings):
     PRIORITY_FLAG: Literal[
         ".env.dev.local", ".env.dev", ".env.local", ".env.prod.local", ".env.prod"
     ]
-    MONGODB_URL: MongoDsn
+    MONGODB_URL: str
     SECRET_KEY: SecretStr
     MODEL: FilePath
     MLB: FilePath
