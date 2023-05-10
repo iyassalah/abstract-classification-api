@@ -1,13 +1,14 @@
+"""Module for all admin related operations"""
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, exceptions
-from pymongo.errors import DuplicateKeyError
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from ..models import User
 from ..routers.auth import get_current_user
 from ..database import users_col
 from ..schema import UserSchema
+from ..crud import create_user
 
 router = APIRouter(
     tags=["admin"],
@@ -23,15 +24,13 @@ class CreateAdmin(BaseModel):
 
 @router.post("/admin")
 async def create_admin(create_admin_dto: User):
-    """
-    Endpoint to create a new admin user.
+    """Creates a new admin, requires the user to be logged in as an admin.
 
-    Parameters:
-    - `user`: A `User` object containing the details of the new user.
-    - `credentials`: An `HTTPBasicCredentials` object containing the admin credentials.
+    Args:
+        `create_admin_dto` (`User`): The credentials of the new admin account
 
     Returns:
-    - A dictionary containing the ID of the newly created user.
+        `str`: returns the ID of the new account
     """
     new_user = create_admin_dto
     user_doc = UserSchema(
@@ -41,18 +40,7 @@ async def create_admin(create_admin_dto: User):
         isAdmin=new_user.isAdmin,
         token=[],
     )
-    # if not create_admin_dto.current_user:
-    #     raise exceptions.HTTPException(
-    #         status_code=401,
-    #         detail="You must be logged in to create a new user",
-    #         headers={"WWW-Authenticate": "Bearer"},
-    #     )
-    try:
-        user_id = users_col.insert_one(user_doc).inserted_id
-    except DuplicateKeyError:
-        raise exceptions.HTTPException(
-            status_code=409, detail="Username already exists"
-        ) from None
+    user_id = create_user(user_doc)
     return {"user_id": str(user_id)}
 
 
