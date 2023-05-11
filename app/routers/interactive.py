@@ -1,9 +1,15 @@
 """Router for interactive (single abstract) input"""
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 
-from ..classifier import Probabilities, get_model
+from ..classifier import get_model
 from ..docparser import extract_from_pdf
-from ..models import CategoriesModel, ErrorMessage, InteractiveModel
+from ..models import (
+    CategoriesModel,
+    ErrorMessage,
+    InteractiveModel,
+    Probabilities,
+    LabelledPDF,
+)
 
 router = APIRouter(
     dependencies=[Depends(get_model)],
@@ -74,7 +80,7 @@ async def classify_one_pdf(file: UploadFile):
 @router.post(
     "/proba/pdf",
     tags=["parser"],
-    response_model=Probabilities,
+    response_model=LabelledPDF,
     responses={400: {"model": ErrorMessage}},
 )
 async def classify_one_pdf_proba(file: UploadFile):
@@ -95,5 +101,39 @@ async def classify_one_pdf_proba(file: UploadFile):
     contents = await file.read()
     abstract = extract_from_pdf(contents)
     if abstract:
-        return get_model().predict_proba_one(abstract)
+        return LabelledPDF(
+            pred=get_model().predict_proba_one(abstract), inferred_abstract=abstract
+        )
     raise HTTPException(400, "Could not locate abstract")
+
+
+@router.post(
+    "/proba/pdfs",
+    tags=["parser"],
+    response_model=list[tuple[str, Probabilities]],
+    responses={400: {"model": ErrorMessage}},
+)
+async def classify_pdfs(files: list[UploadFile]):
+    """Extract abstract from multiple PDF files and returns the predicted categories with probabilities.
+
+    Args:
+        file (`list[UploadFile]`): An uploaded file object in PDF file format.
+
+    Raises:
+        `HTTPException`: If the file is not a PDF, code 400.
+        `HTTPException`: If the abstract cannot be extracted, code 400.
+
+    Returns:
+        `Probabilities`: The predicted categories of the abstract.
+    """
+    result: list[tuple[str, Probabilities]] = []
+    for file in files:
+        if file.content_type != "application/pdf":
+            raise HTTPException(status_code=400, detail="File must be a PDF")
+        contents = await file.read()
+        abstract = extract_from_pdf(contents)
+        if abstract:
+            result.append((abstract, get_model().predict_proba_one(abstract)))
+        else:
+            raise HTTPException(400, "Could not locate abstract")
+    return result
