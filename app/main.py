@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .admin import admin, create_root_admin
 from .database import setup_db_indexes
-from .routers import auth, batch, interactive, docparser
+from .routers import auth, batch, interactive
 
 app = FastAPI(swagger_ui_parameters={"displayRequestDuration": True})
 
@@ -12,7 +12,6 @@ app.include_router(batch.router)
 app.include_router(interactive.router)
 app.include_router(admin.router)
 app.include_router(auth.router)
-app.include_router(docparser.router)
 
 # just to be able to send the request in the same machine
 app.add_middleware(
