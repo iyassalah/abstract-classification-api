@@ -1,4 +1,6 @@
 """Pydantic datamodels"""
+from typing import Optional
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -26,4 +28,4 @@ class User(BaseModel):
     username: str
     email: EmailStr
     password: str
-    isAdmin: bool
+    isAdmin: Optional[bool]

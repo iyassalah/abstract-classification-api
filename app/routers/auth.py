@@ -9,6 +9,7 @@ from jose import ExpiredSignatureError, JWTError, jwt
 from ..config import settings
 from ..crud import authenticate_user, create_user, get_user
 from ..dependancies import Token, TokenData, create_access_token, oauth2_scheme
+from ..models import User
 
 router = APIRouter(tags=["auth"], prefix="/auth")
 
@@ -60,7 +61,7 @@ async def login_for_access_token(
 
 
 @router.post("/create", response_model=Token)
-async def add_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+async def add_user(form_data: User):
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": form_data.username}, expires_delta=access_token_expires
@@ -68,7 +69,7 @@ async def add_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     create_user(
         {
             "username": form_data.username,
-            "email": "",
+            "email": form_data.email,
             "isAdmin": False,
             "password": form_data.password,
             "token": [access_token],
