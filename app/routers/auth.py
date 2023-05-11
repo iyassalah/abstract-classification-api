@@ -15,6 +15,18 @@ router = APIRouter(tags=["auth"], prefix="/auth")
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    """Fetches the current user using the information in the recieve JWT, validates JWT.
+
+    Args:
+        token (`Annotated[str, Depends`): JWT token containing username and expiry date
+
+    Raises:
+        HTTPException: If JWT is invalid with code 401
+        HTTPException: If JWT is expired with code 403
+
+    Returns:
+        `User`: The user account associated with the JWT
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -46,6 +58,17 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
+    """Creates a token using OAuth2
+
+    Args:
+        form_data (`OAuth2PasswordRequestForm`): _description_
+
+    Raises:
+        HTTPException: If the username or password are not valid
+
+    Returns:
+        `dict`: contains `token_type` and `access_token`
+    """
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -62,6 +85,15 @@ async def login_for_access_token(
 
 @router.post("/create", response_model=Token)
 async def add_user(form_data: User):
+    """Create a new user with the given user data, generate a new access token
+    and add it to the user's tokens.
+
+    Args:
+        form_data (User): The user data to be used for creating the new user.
+
+    Returns:
+        Token: The generated access token.
+    """
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": form_data.username}, expires_delta=access_token_expires

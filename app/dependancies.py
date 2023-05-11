@@ -10,11 +10,13 @@ from .config import settings
 
 
 class Token(BaseModel):
+    """Model for the response containing  a JWT token"""
     access_token: str
     token_type: str
 
 
 class TokenData(BaseModel):
+    """Model for the data stored inside a JWT token"""
     username: str | None = None
     exp: datetime | None = None
 
@@ -25,6 +27,15 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    """_summary_
+
+    Args:
+        data (`dict`): A dictionary containing the data to be encoded in the token.
+        expires_delta (`timedelta | None, optional`): The time period after which the token will expire, Defaults to None.
+
+    Returns:
+        `str`: The encoded JWT token as a string.
+    """
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta

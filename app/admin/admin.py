@@ -19,6 +19,7 @@ router = APIRouter(
 
 
 class CreateAdmin(BaseModel):
+    """Payload for creating a new admin account"""
     current_user: Annotated[User, Depends(get_current_user)]
     new_user: User
 
@@ -38,7 +39,7 @@ async def create_admin(create_admin_dto: User):
         username=new_user.username,
         password=new_user.password,
         email=new_user.email,
-        isAdmin=new_user.isAdmin,
+        isAdmin=True,
         token=[],
     )
     user_id = create_user(user_doc)
