@@ -4,6 +4,10 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
+class ErrorMessage(BaseModel):
+    """For fastAPI errors"""
+    detail: str
+
 class BatchModel(BaseModel):
     """Data model for list of abstracts payload used in batch processing"""
 
