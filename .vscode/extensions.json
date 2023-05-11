@@ -5,6 +5,7 @@
         "eamodio.gitlens",
         "github.vscode-pull-request-github",
         "usernamehw.errorlens",
-        "njpwerner.autodocstring"
+        "njpwerner.autodocstring",
+        "ms-python.isort"
     ]
 }

@@ -1,75 +1,49 @@
-"""Admin module for the subset of users who have admin permissions"""
-from fastapi import APIRouter, Depends, exceptions
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from pymongo.collection import Collection
-from pymongo.errors import DuplicateKeyError
-from ..schema import User
-from ..database import db
+"""Module for all admin related operations"""
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel
+
+from ..crud import create_user
+from ..database import users_col
+from ..models import User
+from ..routers.auth import get_current_user
+from ..schema import UserSchema
 
 router = APIRouter(
-    tags=["admin"],
+    tags=["admin", "protected"],
+    prefix='/admin',
     responses={404: {"description": "Not Found"}},
+    dependencies=[Depends(get_current_user)],
 )
-security = HTTPBasic()
 
 
-@router.post("/admin")
-async def create_admin(
-    user: User, credentials: HTTPBasicCredentials = Depends(security)
-):
-    """
-    Endpoint to create a new admin user.
-
-    Parameters:
-    - `user`: A `User` object containing the details of the new user.
-    - `credentials`: An `HTTPBasicCredentials` object containing the admin credentials.
-
-    Returns:
-    - A dictionary containing the ID of the newly created user.
-    """
-    authorized = True
-    if credentials.username == "admin" and credentials.password == "password":
-        authorized = True
-    if not authorized:
-        return {"message": "Invalid credentials"}
-
-    collection: Collection = db.users
-
-    user_data = user.dict()
-    user_data["isAdmin"] = True
-    try:
-        user_id = collection.insert_one(user_data).inserted_id
-    except DuplicateKeyError:
-        raise exceptions.HTTPException(
-            status_code=409, detail="Username already exists"
-        ) from None
-    return {"user_id": str(user_id)}
+class CreateAdmin(BaseModel):
+    """Payload for creating a new admin account"""
+    current_user: Annotated[User, Depends(get_current_user)]
+    new_user: User
 
 
-@router.post("/login")
-async def login(credentials: HTTPBasicCredentials):
-    """
-    Endpoint to authenticate a user.
+@router.post("/")
+async def create_admin(create_admin_dto: User):
+    """Creates a new admin, requires the user to be logged in as an admin.
 
-    Parameters:
-    - `credentials`: An `HTTPBasicCredentials` object containing the user credentials.
+    Args:
+        `create_admin_dto` (`User`): The credentials of the new admin account
 
     Returns:
-    - A dictionary containing a message indicating whether the login was successful or not.
+        `str`: returns the ID of the new account
     """
-
-    collection = db.users
-    user = collection.find_one(
-        {"email": credentials.username, "password": credentials.password}
+    new_user = create_admin_dto
+    user_doc = UserSchema(
+        username=new_user.username,
+        password=new_user.password,
+        email=new_user.email,
+        isAdmin=True,
+        token=[],
     )
-    if not user:
-        return {"message": "User not found"}
-    return {"message": "Login successful"}
-
-
-root_admin = User(
-    username="root", email="root@example.com", password="password", isAdmin=True
-)
+    user_id = create_user(user_doc)
+    return {"user_id": str(user_id)}
 
 
 def create_root_admin():
@@ -79,11 +53,12 @@ def create_root_admin():
     Returns:
     - A dictionary containing the ID of the newly created user.
     """
-    collection = db.users
-    existing_user = collection.find_one({"username": "root"})
+    root_admin = UserSchema(
+        username="root", email="root@example.com", password="password", isAdmin=True
+    )
+    existing_user = users_col.find_one({"username": "root"})
     if existing_user:
         print("Root admin user already exists.")
     else:
-        root_admin_data = root_admin.dict()
-        root_admin_data["isAdmin"] = True
-        collection.insert_one(root_admin_data)
+        root_admin["isAdmin"] = True
+        users_col.insert_one(root_admin)

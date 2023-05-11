@@ -1,16 +1,17 @@
 """Entry point for the app, run this using uvicorn"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import batch, interactive
+
 from .admin import admin, create_root_admin
 from .database import setup_db_indexes
-
+from .routers import auth, batch, interactive
 
 app = FastAPI()
 
 app.include_router(batch.router)
 app.include_router(interactive.router)
 app.include_router(admin.router)
+app.include_router(auth.router)
 
 # just to be able to send the request in the same machine
 app.add_middleware(

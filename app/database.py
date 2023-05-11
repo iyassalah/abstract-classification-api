@@ -1,14 +1,17 @@
 """database connection"""
-from pymongo import MongoClient, collection
-from .config import settings
+from pymongo import MongoClient
+from pymongo.collection import Collection
 
-client: MongoClient = MongoClient(settings.MONGODB_URL)
-db = client.abstractsClassificationSystem
+from .config import settings
+from .schema import UserSchema
+
+__client: MongoClient = MongoClient(settings.MONGODB_URL)
+db = __client.abstractsClassificationSystem
+users_col: Collection[UserSchema] = db.users
 
 
 def setup_db_indexes() -> None:
     """Create DB indexes if they do not exist already"""
-    col: collection.Collection = db.users
-    index_info = col.index_information()
+    index_info = users_col.index_information()
     if "username_1" not in index_info:
-        col.create_index([("username", 1)], unique=True)
+        users_col.create_index([("username", 1)], unique=True)

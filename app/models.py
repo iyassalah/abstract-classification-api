@@ -1,5 +1,7 @@
 """Pydantic datamodels"""
-from pydantic import BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, EmailStr
 
 
 class BatchModel(BaseModel):
@@ -18,3 +20,12 @@ class CategoriesModel(BaseModel):
     """Model for the list of predicted categories returned by end points"""
 
     categories: list[str]
+
+
+class User(BaseModel):
+    """User datamodel"""
+
+    username: str
+    email: EmailStr
+    password: str
+    isAdmin: Optional[bool]

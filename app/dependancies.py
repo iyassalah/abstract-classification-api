@@ -1,67 +1,48 @@
-""""Shared module"""
-from typing import Annotated
-import joblib
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MultiLabelBinarizer
+"""Dependancies module for cryptography"""
+from datetime import datetime, timedelta
+
+from fastapi.security import OAuth2PasswordBearer
+from jose import jwt
+from passlib.context import CryptContext
+from pydantic import BaseModel
+
 from .config import settings
 
 
-Probabilities = dict[str, Annotated[list[float], 2]]
+class Token(BaseModel):
+    """Model for the response containing  a JWT token"""
+    access_token: str
+    token_type: str
 
 
-class __classifier:
-    """Wrapper for the classifier model
-
-    Returns:
-        Classifier: the classifier wrapped in a helper class.
-    """
-
-    def __init__(self):
-        model_name = settings.MODEL
-        mlb_name = settings.MLB
-        self.__model: Pipeline = joblib.load(model_name)
-        self.__mlb: MultiLabelBinarizer = joblib.load(mlb_name)
-        print(self.__model)  # TODO: replace with logger
-        print(self.__mlb)
-
-    def predict_one(self, X: str) -> list[str]:
-        """Classify an abstract
-
-        Args:
-            X (str): Abstract to classify
-
-        Returns:
-            List[str]: List of categories as strings
-        """
-        prediction = self.__model.predict([X])
-        return self.__mlb.inverse_transform(prediction)[0]
-
-    def predict_proba_one(self, X: str) -> Probabilities:
-        """Classify an abstract
-
-        Args:
-            X (str): Abstract to classify
-
-        Returns:
-            dict[str, Annotated[list[float], 2]]: List label probabilities
-        """
-        return {
-            label: proba.tolist()[0]
-            for proba, label in zip(
-                self.__model.predict_proba([X]), self.__mlb.classes_
-            )
-        }
+class TokenData(BaseModel):
+    """Model for the data stored inside a JWT token"""
+    username: str | None = None
+    exp: datetime | None = None
 
 
-__model = __classifier()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-def get_model():
-    """Returns an instance of a classifier model
+def create_access_token(data: dict, expires_delta: timedelta | None = None):
+    """_summary_
+
+    Args:
+        data (`dict`): A dictionary containing the data to be encoded in the token.
+        expires_delta (`timedelta | None, optional`): The time period after which the token will expire, Defaults to None.
 
     Returns:
-        Classifier:  the model
+        `str`: The encoded JWT token as a string.
     """
-    if __model:
-        return __model
-    return __classifier()
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(
+        to_encode, settings.SECRET_KEY.get_secret_value(), algorithm=settings.ALGORITHM
+    )
+    return encoded_jwt
