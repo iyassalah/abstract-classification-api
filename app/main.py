@@ -6,7 +6,7 @@ from .admin import admin, create_root_admin
 from .database import setup_db_indexes
 from .routers import auth, batch, interactive
 
-app = FastAPI()
+app = FastAPI(swagger_ui_parameters={"displayRequestDuration": True})
 
 app.include_router(batch.router)
 app.include_router(interactive.router)
