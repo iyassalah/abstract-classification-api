@@ -1,5 +1,6 @@
 """Dependancies module for cryptography"""
 from datetime import datetime, timedelta
+from typing import Literal
 
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
@@ -11,14 +12,17 @@ from .config import settings
 
 class Token(BaseModel):
     """Model for the response containing  a JWT token"""
+
     access_token: str
     token_type: str
 
 
 class TokenData(BaseModel):
     """Model for the data stored inside a JWT token"""
+
     username: str | None = None
     exp: datetime | None = None
+    role: Literal["admin"] | Literal["none"] = 'none'
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
