@@ -12,7 +12,7 @@ from ..schema import UserSchema
 
 router = APIRouter(
     tags=["admin", "protected"],
-    prefix='/admin',
+    prefix="/admin",
     responses={404: {"description": "Not Found"}},
     dependencies=[Depends(get_current_user)],
 )
@@ -20,6 +20,7 @@ router = APIRouter(
 
 class CreateAdmin(BaseModel):
     """Payload for creating a new admin account"""
+
     current_user: Annotated[User, Depends(get_current_user)]
     new_user: User
 
@@ -54,11 +55,11 @@ def create_root_admin():
     - A dictionary containing the ID of the newly created user.
     """
     root_admin = UserSchema(
-        username="root", email="root@example.com", password="password", isAdmin=True
+        username="root", email="root@example.com", password="root", isAdmin=True
     )
     existing_user = users_col.find_one({"username": "root"})
     if existing_user:
         print("Root admin user already exists.")
     else:
         root_admin["isAdmin"] = True
-        users_col.insert_one(root_admin)
+        create_user(root_admin)
