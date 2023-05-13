@@ -52,6 +52,7 @@ class __classifier:
                 self.__model.predict_proba([X]), self.__mlb.classes_
             )
         }
+
     def get_classes(self) -> list[str]:
         """Return the list of classes that the classifier is trained to predict
 
@@ -60,7 +61,9 @@ class __classifier:
         """
         return self.__mlb.classes_
 
+
 __model = __classifier()
+
 
 def get_model():
     """Returns an instance of a classifier model
@@ -71,6 +74,7 @@ def get_model():
     if __model:
         return __model
     return __classifier()
+
 
 def get_classes() -> list[str]:
     """

@@ -3,11 +3,12 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 
 from .config import settings
-from .schema import UserSchema
+from .schema import UserSchema, AbstractLabelMapping
 
 __client: MongoClient = MongoClient(settings.MONGODB_URL)
 db = __client.abstractsClassificationSystem
 users_col: Collection[UserSchema] = db.users
+mappings_col: Collection[AbstractLabelMapping] = db.classes
 
 
 def setup_db_indexes() -> None:
