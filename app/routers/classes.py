@@ -28,7 +28,8 @@ async def update_displayed_name(internal_name: str, displayed_name: str):
         target_lable (str): The new target label.
 
     Returns:
-        dict: A dictionary containing a message indicating whether the target label was updated successfully or not.
+        dict: A dictionary containing a message indicating whether the target label was 
+        updated successfully or not.
     """
     return update_class_displayed_name(internal_name, displayed_name)
 
