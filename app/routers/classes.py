@@ -1,19 +1,31 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 from pymongo import MongoClient
 from bson import ObjectId
 from pydantic import BaseModel
+
 from ..database import db
 from ..schema import Class
+from ..classifier import get_classes
 
-app = FastAPI()
+router = APIRouter(
+    tags=["classes"],
+    prefix="/Classes",
+    responses={404: {"description": "Not Found"}},
+)
 
-# Connect to the MongoDB database
-client = MongoClient("mongodb://localhost:27017/")
-db = client["mydatabase"]
 classes_collection = db["classes"]
 
+# Store all classes from get_classes() at startup
+def store_classes():
+    classes = get_classes()
+    for model_class in classes:
+        new_class = Class(modelClass=model_class, UIClass=model_class)
+        result = classes_collection.insert_one(new_class.dict())
+        print(f"Inserted new class with id: {result.inserted_id}")
+
+
 # Update the UIClass for a specific modelClass
-@app.put("/classes/{modelClass}")
+@router.put("/classes/{modelClass}")
 async def update_uiclass(modelClass: str, uiclass: str):
     query = {"modelClass": modelClass}
     update = {"$set": {"UIClass": uiclass}}
@@ -24,7 +36,7 @@ async def update_uiclass(modelClass: str, uiclass: str):
         return {"message": "No documents were modified"}
 
 # Return all tags from the database for the UI
-@app.get("/classes/")
+@router.get("/classes/")
 async def get_uiclasses():
     uiclasses = []
     for doc in classes_collection.find({}, {"_id": 0, "UIClass": 1}):
