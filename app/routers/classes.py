@@ -28,6 +28,7 @@ def store_classes():
             result = classes_collection.insert_one(new_class.dict())
             print(f"Inserted new class with id: {result.inserted_id}")
 
+@router.put("/classes/{internal_label}")
 async def update_target_lable(internal_label: str, target_lable: str):
     """
     Updates the target label for a specific internal label.
@@ -48,6 +49,7 @@ async def update_target_lable(internal_label: str, target_lable: str):
     else:
         return {"message": "No documents were modified"}
 
+@router.get("/classes/")
 async def get_target_lable():
     """
     Returns a list of all the target labels in the database for the UI.
