@@ -4,9 +4,10 @@ from typing import Optional
 from fastapi import exceptions
 from pymongo.errors import DuplicateKeyError
 
-from .database import users_col
+from .classifier import get_classes
+from .database import users_col, mappings_col
 from .dependancies import pwd_context
-from .schema import UserSchema
+from .schema import UserSchema, AbstractLabelMapping
 
 
 def get_user(username: str):
@@ -73,3 +74,19 @@ def authenticate_user(username: str, password: str) -> Optional[UserSchema]:
     if not verify_password(password, user["password"]):
         return None
     return user
+
+
+def populate_classes():
+    """
+    Stores all the classes from `get_classes()` into the database at startup.
+
+    """
+    classes = get_classes()
+    for model_class in classes:
+        new_class = AbstractLabelMapping(
+            internalName=model_class, displayedName=model_class
+        )
+        try:
+            mappings_col.insert_one(new_class)
+        except DuplicateKeyError:
+            pass

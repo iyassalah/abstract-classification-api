@@ -18,3 +18,5 @@ def setup_db_indexes() -> None:
         users_col.create_index([("username", 1)], unique=True)
     if "email_1" not in index_info:
         users_col.create_index([("email", 1)], unique=True)
+    if "internalName_1" not in mappings_col.index_information():
+        mappings_col.create_index([("internalName", 1)], unique=True)

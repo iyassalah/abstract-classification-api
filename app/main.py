@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .admin import admin, create_root_admin
 from .database import setup_db_indexes
-from .routers import auth, batch, interactive, classes, store_classes
+from .routers import auth, batch, interactive, classes
+from .crud import populate_classes
 
 app = FastAPI(swagger_ui_parameters={"displayRequestDuration": True})
 
@@ -30,7 +31,7 @@ async def startup_event():
     """load the configs, configure the DB"""
     setup_db_indexes()
     create_root_admin()
-    store_classes()
+    populate_classes()
 
 
 @app.get("/")

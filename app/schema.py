@@ -40,8 +40,8 @@ class UserSchema(TypedDict):
 class AbstractLabelMapping(TypedDict):
     """Schema for mapping the internal names of abstract labels to their displayed ones"""
 
-    InternalName: str
-    DisplayedName: str
+    internalName: str
+    displayedName: str
 
 
 class Class(BaseModel):
