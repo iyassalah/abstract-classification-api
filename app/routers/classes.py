@@ -33,7 +33,12 @@ async def update_displayed_name(internal_name: str, displayed_name: str):
     return update_class_displayed_name(internal_name, displayed_name)
 
 @router.get("/classes/")
-async def get_target_labels():
+async def get_classes():
+    """_summary_
+        function to return classes 
+    Returns:
+        array: objects has both internal and displayed name 
+    """
     classes = []
     for doc in mappings_col.find({}, {"_id": 0, "internalName": 1, "displayedName": 1}):
         classes.append({"internalName": doc["internalName"], "displayedName": doc["displayedName"]})
