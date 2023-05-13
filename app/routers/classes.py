@@ -1,8 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from ..database import mappings_col
 from ..schema import AbstractLabelMapping
 from ..classifier import get_classes
+from .auth import require_admin
 
 router = APIRouter(
     tags=["classes"],
@@ -28,7 +29,14 @@ def store_classes():
 
 
 # Update the UIClass for a specific modelClass
-@router.put("/classes/{internal_name}")
+@router.put(
+    "/classes/{internal_name}",
+    dependencies=[Depends(require_admin)],
+    responses={
+        401: {"detail": "Not authenticated"},
+        403: {"detail": "Insufficient permissions"},
+    },
+)
 async def update_uiclass(internal_name: str, displayed_name: str):
     """
     Updates the target label for a specific internal label.

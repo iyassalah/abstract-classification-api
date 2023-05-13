@@ -54,6 +54,27 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     return user
 
 
+async def require_admin(token: Annotated[str, Depends(oauth2_scheme)]):
+    """Fetches the current user using the information in the recieve JWT, validates JWT.
+
+    Args:
+        token (`Annotated[str, Depends`): JWT token containing username and expiry date
+
+    Raises:
+        HTTPException: If JWT is invalid with code 401
+        HTTPException: If JWT is expired with code 403
+
+    Returns:
+        `User`: The user account associated with the JWT
+    """
+    user = await get_current_user(token)
+    if not user["isAdmin"]:
+        raise HTTPException(
+            status_code=403, detail="Insufficient permissions"
+        ) from None
+    return user
+
+
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
