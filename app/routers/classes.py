@@ -4,7 +4,7 @@ from bson import ObjectId
 from pydantic import BaseModel
 
 from ..database import db
-from ..schema import Class
+from ..schema import AbstractClassMapper
 from ..classifier import get_classes
 
 router = APIRouter(
@@ -17,20 +17,20 @@ classes_collection = db["classes"]
 # Store all classes from get_classes() at startup
 def store_classes():
     classes = get_classes()
-    for model_class in classes:
-        query = {"modelClass": model_class}
+    for internal_label in classes:
+        query = {"internal_label": internal_label}
         existing_class = classes_collection.find_one(query)
         if not existing_class:
-            new_class = Class(modelClass=model_class, UIClass=model_class)
+            new_class = AbstractClassMapper(internal_label=internal_label, target_lable=internal_label)
             result = classes_collection.insert_one(new_class.dict())
             print(f"Inserted new class with id: {result.inserted_id}")
 
 
 # Update the UIClass for a specific modelClass
-@router.put("/classes/{modelClass}")
-async def update_uiclass(modelClass: str, uiclass: str):
+@router.put("/classes/{internal_label}")
+async def update_target_lable(internal_label: str, target_lable: str):
     query = {"modelClass": modelClass}
-    update = {"$set": {"UIClass": uiclass}}
+    update = {"$set": {"target_lable": target_lable}}
     result = classes_collection.update_one(query, update)
     if result.modified_count == 1:
         return {"message": "UIClass updated successfully"}
@@ -39,8 +39,8 @@ async def update_uiclass(modelClass: str, uiclass: str):
 
 # Return all tags from the database for the UI
 @router.get("/classes/")
-async def get_uiclasses():
-    uiclasses = []
+async def get_target_lable():
+    target_lables = []
     for doc in classes_collection.find({}, {"_id": 0, "UIClass": 1}):
-        uiclasses.append(doc["UIClass"])
-    return {"uiclasses": uiclasses}
+        target_lables.append(doc["target_lable"])
+    return {"target_lables": target_lables}

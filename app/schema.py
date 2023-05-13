@@ -35,9 +35,9 @@ class UserSchema(TypedDict):
     password: str
     isAdmin: bool
     token: NotRequired[list[str]]
-
-class Class(BaseModel):
+    
+class AbstractClassMapper(BaseModel):
     """ class schema """
-
-    modelClass: str
-    UIClass: str
+    
+    internal_label: str
+    target_lable: str
