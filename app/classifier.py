@@ -51,6 +51,14 @@ class __classifier:
             )
         }
 
+    def get_classes(self) -> list[str]:
+        """Return the list of classes that the classifier is trained to predict
+
+        Returns:
+            List[str]: The list of classes
+        """
+        return self.__mlb.classes_
+
 
 __model = __classifier()
 
@@ -64,3 +72,13 @@ def get_model():
     if __model:
         return __model
     return __classifier()
+
+
+def get_classes() -> list[str]:
+    """
+    Return the list of classes that the classifier is trained to predict
+
+    Returns:
+        List[str]: The list of classes
+    """
+    return get_model().get_classes()

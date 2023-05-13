@@ -35,3 +35,17 @@ class UserSchema(TypedDict):
     password: str
     isAdmin: bool
     token: NotRequired[list[str]]
+
+
+class AbstractLabelMapping(TypedDict):
+    """Schema for mapping the internal names of abstract labels to their displayed ones"""
+
+    internalName: str
+    displayedName: str
+
+
+class Class(BaseModel):
+    """class schema"""
+
+    modelClass: str
+    UIClass: str
