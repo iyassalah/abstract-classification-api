@@ -19,9 +19,12 @@ classes_collection = db["classes"]
 def store_classes():
     classes = get_classes()
     for model_class in classes:
-        new_class = Class(modelClass=model_class, UIClass=model_class)
-        result = classes_collection.insert_one(new_class.dict())
-        print(f"Inserted new class with id: {result.inserted_id}")
+        query = {"modelClass": model_class}
+        existing_class = classes_collection.find_one(query)
+        if not existing_class:
+            new_class = Class(modelClass=model_class, UIClass=model_class)
+            result = classes_collection.insert_one(new_class.dict())
+            print(f"Inserted new class with id: {result.inserted_id}")
 
 
 # Update the UIClass for a specific modelClass
