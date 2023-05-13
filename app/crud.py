@@ -90,3 +90,21 @@ def populate_classes():
             mappings_col.insert_one(new_class)
         except DuplicateKeyError:
             pass
+
+def update_class_displayed_name(internal_name: str, new_displayed_name: str):
+    """_summary_
+        function to update a specific class display name 
+    Args:
+        internal_name (str): _description_
+        new_displayed_name (str): _description_
+
+    Returns:
+        str: massage to report the result success or fail.
+    """
+    query = {"internalName": internal_name}
+    update = {"$set": {"displayedName": new_displayed_name}}
+    result = mappings_col.update_one(query, update)
+    if result.modified_count == 1:
+        return {"message": "Target label updated successfully"}
+    return {"message": "No documents were modified"}
+    

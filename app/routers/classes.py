@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 
 from ..database import mappings_col
 from .auth import require_admin
+from ..crud import update_class_displayed_name
 
 router = APIRouter(
     tags=["classes"],
@@ -9,18 +10,16 @@ router = APIRouter(
 )
 
 
-
-
 # Update the UIClass for a specific modelClass
 @router.put(
-    "/classes/{internal_name}",
+    "/classes/{internalName}",
     dependencies=[Depends(require_admin)],
     responses={
         401: {"detail": "Not authenticated"},
         403: {"detail": "Insufficient permissions"},
     },
 )
-async def update_uiclass(internal_name: str, displayed_name: str):
+async def update_displayed_name(internal_name: str, displayed_name: str):
     """
     Updates the target label for a specific internal label.
 
@@ -31,19 +30,11 @@ async def update_uiclass(internal_name: str, displayed_name: str):
     Returns:
         dict: A dictionary containing a message indicating whether the target label was updated successfully or not.
     """
-    query = {"internalName": internal_name}
-    update = {"$set": {"displayedName": displayed_name}}
-    result = mappings_col.update_one(query, update)
-    if result.modified_count == 1:
-        return {"message": "Target label updated successfully"}
-    else:
-        return {"message": "No documents were modified"}
+    return update_class_displayed_name(internal_name, displayed_name)
 
-
-# Return all tags from the database for the UI
 @router.get("/classes/")
-async def get_uiclasses():
-    uiclasses = []
-    for doc in mappings_col.find({}, {"_id": 0, "displayedName": 1}):
-        uiclasses.append(doc["displayedName"])
-    return {"uiclasses": uiclasses}
+async def get_target_labels():
+    classes = []
+    for doc in mappings_col.find({}, {"_id": 0, "internalName": 1, "displayedName": 1}):
+        classes.append({"internalName": doc["internalName"], "displayedName": doc["displayedName"]})
+    return {"classes": classes}
