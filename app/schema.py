@@ -35,3 +35,9 @@ class UserSchema(TypedDict):
     password: str
     isAdmin: bool
     token: NotRequired[list[str]]
+
+class Class(BaseModel):
+    """ class schema """
+
+    modelClass: str
+    UIClass: str
