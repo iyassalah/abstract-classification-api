@@ -10,8 +10,11 @@ router = APIRouter(
 )
 
 
-# Store all classes from get_classes() at startup
 def store_classes():
+    """
+    Stores all the classes from `get_classes()` into the database at startup.
+
+    """
     classes = get_classes()
     for model_class in classes:
         query = {"modelClass": model_class}
@@ -27,11 +30,21 @@ def store_classes():
 # Update the UIClass for a specific modelClass
 @router.put("/classes/{internal_name}")
 async def update_uiclass(internal_name: str, displayed_name: str):
-    query = {"modelClass": internal_name}
-    update = {"$set": {"UIClass": displayed_name}}
+    """
+    Updates the target label for a specific internal label.
+
+    Args:
+        internal_label (str): The internal label to be updated.
+        target_lable (str): The new target label.
+
+    Returns:
+        dict: A dictionary containing a message indicating whether the target label was updated successfully or not.
+    """
+    query = {"InternalName": internal_name}
+    update = {"$set": {"DisplayedName": displayed_name}}
     result = mappings_col.update_one(query, update)
     if result.modified_count == 1:
-        return {"message": "UIClass updated successfully"}
+        return {"message": "Target label updated successfully"}
     else:
         return {"message": "No documents were modified"}
 
@@ -40,6 +53,6 @@ async def update_uiclass(internal_name: str, displayed_name: str):
 @router.get("/classes/")
 async def get_uiclasses():
     uiclasses = []
-    for doc in mappings_col.find({}, {"_id": 0, "UIClass": 1}):
+    for doc in mappings_col.find({}, {"_id": 0, "DisplayedName": 1}):
         uiclasses.append(doc["DisplayedName"])
     return {"uiclasses": uiclasses}
