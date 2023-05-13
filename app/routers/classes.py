@@ -17,7 +17,7 @@ def store_classes():
     """
     classes = get_classes()
     for model_class in classes:
-        query = {"modelClass": model_class}
+        query = {"InternalName": model_class}
         existing_class = mappings_col.find_one(query)
         if not existing_class:
             new_class = AbstractLabelMapping(
