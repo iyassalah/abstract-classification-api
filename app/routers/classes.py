@@ -9,7 +9,6 @@ from ..classifier import get_classes
 
 router = APIRouter(
     tags=["classes"],
-    prefix="/Classes",
     responses={404: {"description": "Not Found"}},
 )
 
