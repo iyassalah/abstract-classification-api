@@ -12,7 +12,7 @@ router = APIRouter(
 
 # Update the UIClass for a specific modelClass
 @router.put(
-    "/classes/{internalName}",
+    "/classes/{internal_name}",
     dependencies=[Depends(require_admin)],
     responses={
         401: {"detail": "Not authenticated"},
