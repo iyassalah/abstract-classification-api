@@ -28,12 +28,3 @@ async def startup_event():
     """load the configs, configure the DB"""
     setup_db_indexes()
     create_root_admin()
-
-
-@app.get("/")
-async def root():
-    """
-    root module
-    """
-
-    return {"message": "hi"}

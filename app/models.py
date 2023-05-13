@@ -1,7 +1,15 @@
 """Pydantic datamodels"""
-from typing import Optional
+from typing import Annotated, Optional
 
 from pydantic import BaseModel, EmailStr
+
+Probabilities = dict[str, Annotated[list[float], 2]]
+
+
+class ErrorMessage(BaseModel):
+    """For fastAPI errors"""
+
+    detail: str
 
 
 class BatchModel(BaseModel):
@@ -14,6 +22,13 @@ class InteractiveModel(BaseModel):
     """Model for the single abstraction classification endpoint (interactive)."""
 
     abstract: str
+
+
+class LabelledPDF(BaseModel):
+    """Model for process PDF files, with extracted abstract and predicted label probabilities"""
+
+    inferred_abstract: str
+    pred: Probabilities
 
 
 class CategoriesModel(BaseModel):

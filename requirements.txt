@@ -8,3 +8,4 @@ python-dotenv==1.0.0
 scikit_learn==1.2.1
 passlib==1.7.4
 python_jose==3.3.0
+PyMuPDF==1.22.2
