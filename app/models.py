@@ -1,9 +1,9 @@
 """Pydantic datamodels"""
-from typing import Annotated, Optional
+from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
-Probabilities = dict[str, Annotated[list[float], 2]]
+Probabilities = dict[str, float]
 
 
 class ErrorMessage(BaseModel):

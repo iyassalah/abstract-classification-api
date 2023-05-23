@@ -3,6 +3,7 @@
 import joblib
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MultiLabelBinarizer
+from numpy import ndarray
 
 from .config import settings
 from .models import Probabilities
@@ -44,11 +45,9 @@ class __classifier:
         Returns:
             dict[str, Annotated[list[float], 2]]: List label probabilities
         """
+        pred: ndarray = self.__model.predict_proba([X])
         return {
-            label: proba.tolist()[0]
-            for proba, label in zip(
-                self.__model.predict_proba([X]), self.__mlb.classes_
-            )
+            label: proba.tolist() for proba, label in zip(pred[0], self.__mlb.classes_)
         }
 
     def get_classes(self) -> list[str]:
