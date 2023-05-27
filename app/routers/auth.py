@@ -43,7 +43,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
             raise credentials_exception
         token_data = TokenData(username=username)
     except ExpiredSignatureError:
-        raise HTTPException(status_code=403, detail="token has been expired") from None
+        raise HTTPException(status_code=403, detail="token has expired") from None
     except JWTError:
         raise credentials_exception from None
     if not token_data.username:

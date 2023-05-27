@@ -47,9 +47,13 @@ async def create_admin(create_admin_dto: User):
     return {"user_id": str(user_id)}
 
 
-@router.get("/stats")
+@router.get("/stats", response_model=Stats)
 async def get_model_stats():
-    print(get_params())
+    """Get the latest confusion matrix from the db
+
+    Returns:
+        `Stats`: The confusion matrix
+    """
     params = get_params()
     stats = Stats(fn=params["fn"], tp=params["tp"], tn=params["tn"], fp=params["fp"])
     return stats

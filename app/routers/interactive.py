@@ -1,5 +1,5 @@
 """Router for interactive (single abstract) input"""
-from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi import APIRouter, HTTPException, UploadFile
 
 from ..classifier import get_model
 from ..docparser import extract_from_pdf
