@@ -4,9 +4,9 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
-from ..crud import create_user
+from ..crud import create_user, get_params
 from ..database import users_col
-from ..models import User
+from ..models import User, Stats
 from ..routers.auth import get_current_user
 from ..schema import UserSchema
 
@@ -45,6 +45,14 @@ async def create_admin(create_admin_dto: User):
     )
     user_id = create_user(user_doc)
     return {"user_id": str(user_id)}
+
+
+@router.get("/stats")
+async def get_model_stats():
+    print(get_params())
+    params = get_params()
+    stats = Stats(fn=params["fn"], tp=params["tp"], tn=params["tn"], fp=params["fp"])
+    return stats
 
 
 def create_root_admin():

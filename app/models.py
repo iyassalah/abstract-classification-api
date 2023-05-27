@@ -44,3 +44,12 @@ class User(BaseModel):
     email: EmailStr
     password: str
     isAdmin: Optional[bool]
+
+
+class Stats(BaseModel):
+    """Data Model for the performance metrics of classifier instance"""
+
+    tn: int
+    fn: int
+    tp: int
+    fp: int

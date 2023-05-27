@@ -5,9 +5,9 @@ from fastapi import exceptions
 from pymongo.errors import DuplicateKeyError
 
 from .classifier import get_classes
-from .database import users_col, mappings_col
+from .database import mappings_col, stats_col, users_col
 from .dependancies import pwd_context
-from .schema import UserSchema, AbstractLabelMapping
+from .schema import AbstractLabelMapping, UserSchema, HyperparameterSchema
 
 
 def get_user(username: str):
@@ -91,9 +91,10 @@ def populate_classes():
         except DuplicateKeyError:
             pass
 
+
 def update_class_displayed_name(internal_name: str, new_displayed_name: str):
     """_summary_
-        function to update a specific class display name 
+        function to update a specific class display name
     Args:
         internal_name (str): _description_
         new_displayed_name (str): _description_
@@ -107,4 +108,11 @@ def update_class_displayed_name(internal_name: str, new_displayed_name: str):
     if result.modified_count == 1:
         return {"message": "Target label updated successfully"}
     return {"message": "No documents were modified"}
-    
+
+
+def get_params() -> HyperparameterSchema:
+    stats = stats_col.find().sort("created", -1).limit(1)
+    print(stats)
+    if not stats:
+        raise exceptions.HTTPException(404, "Could not retrieve statistics")
+    return stats[0]

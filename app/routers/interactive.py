@@ -12,7 +12,6 @@ from ..models import (
 )
 
 router = APIRouter(
-    dependencies=[Depends(get_model)],
     tags=["interactive"],
     responses={404: {"description": "Not Found"}},
     prefix="/active",

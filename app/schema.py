@@ -16,8 +16,8 @@ class Abstract(BaseModel):
     prediction: list[str]
 
 
-class Hyperparameter(BaseModel):
-    """Hyperparameter schema"""
+class HyperparameterSchema(TypedDict):
+    """Hyperparameters and metrics schema, stored for each model instance"""
 
     created: datetime
     params: object
