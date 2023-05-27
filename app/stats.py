@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 from .database import stats_col
-from .classifier import get_classes
+from .classifier import get_classes, get_model
 
 
 def remove_sub_cat(cats: list[str]):
@@ -13,8 +13,10 @@ def remove_sub_cat(cats: list[str]):
 dropped_cats = set(get_classes())
 
 
-def select_cats(cats: list[str]):
-    return [cat for cat in remove_sub_cat(cats) if cat in dropped_cats]
+def select_cats(cats: str):
+    return np.array(
+        [cat for cat in remove_sub_cat(cats.split(" ")) if cat in dropped_cats]
+    )
 
 
 async def evalutate_classifier():
@@ -25,11 +27,13 @@ async def evalutate_classifier():
     )
     # print(df.ndim)
     # np.info(df)
-    # print(df[0][2].split(" "))
     # print(select_cats(df[0][2].split(" ")))
     X = df[:, 3]
-    y = np.apply_along_axis(select_cats, 0, df[:, 2])
-    print(X[0])
+    y = np.vectorize(select_cats, otypes=[np.ndarray])(df[:, 2])
     print(y[0])
+    print(df[:, 2][0])
+    # print(df[0][2].split(" "))
+    print(select_cats(df[:, 2][0]))
+    print(get_model().confusion_mat(X, y))
     # stats_col.insert_one({"fp"})
     return

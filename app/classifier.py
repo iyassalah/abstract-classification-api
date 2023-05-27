@@ -2,7 +2,7 @@
 
 import joblib
 from numpy import ndarray
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import multilabel_confusion_matrix
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MultiLabelBinarizer
 
@@ -67,7 +67,10 @@ class __classifier:
         """
         y_test = self.__mlb.transform(y)
         pred = self.__model.predict(X)
-        tn, fp, fn, tp = confusion_matrix(y_test, pred).ravel()
+        mat = multilabel_confusion_matrix(y_test, pred)
+        flattened = sum(mat)
+        print(flattened.shape)
+        (tn, fp), (fn, tp) = flattened
         return tn, fp, fn, tp
 
 
