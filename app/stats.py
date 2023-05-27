@@ -1,4 +1,5 @@
 import os
+import datetime
 
 import numpy as np
 
@@ -25,15 +26,19 @@ async def evalutate_classifier():
     df: np.ndarray = np.load(
         os.path.join(parent_directory, "../test.npy"), allow_pickle=True
     )
-    # print(df.ndim)
-    # np.info(df)
-    # print(select_cats(df[0][2].split(" ")))
     X = df[:, 3]
     y = np.vectorize(select_cats, otypes=[np.ndarray])(df[:, 2])
-    print(y[0])
-    print(df[:, 2][0])
-    # print(df[0][2].split(" "))
-    print(select_cats(df[:, 2][0]))
-    print(get_model().confusion_mat(X, y))
-    # stats_col.insert_one({"fp"})
+    model = get_model()
+    tn, fp, fn, tp = model.confusion_mat(X, y)
+    # print(model.model.get_params())
+    stats_col.insert_one(
+        {
+            "fp": fp,
+            "tp": tp,
+            "fn": fn,
+            "tn": tn,
+            "created": datetime.datetime.now(),
+            "params": {},
+        }
+    )
     return

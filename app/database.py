@@ -7,6 +7,7 @@ from .schema import UserSchema, AbstractLabelMapping, HyperparameterSchema
 
 __client: MongoClient = MongoClient(settings.MONGODB_URL)
 db = __client.abstractsClassificationSystem
+
 users_col: Collection[UserSchema] = db.users
 mappings_col: Collection[AbstractLabelMapping] = db.classes
 stats_col: Collection[HyperparameterSchema] = db.stats

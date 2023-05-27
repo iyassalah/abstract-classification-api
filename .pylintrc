@@ -1,4 +1,4 @@
 [MASTER]
 extension-pkg-allow-list=pydantic
-good-names=X,y,__classifier, df
+good-names=tn,fp,fn,tp,X,y,__classifier, df
 disable=C0115, C0116
