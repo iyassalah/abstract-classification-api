@@ -1,9 +1,10 @@
 """"Shared module"""
 
 import joblib
+from numpy import ndarray
+from sklearn.metrics import confusion_matrix
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MultiLabelBinarizer
-from numpy import ndarray
 
 from .config import settings
 from .models import Probabilities
@@ -57,6 +58,17 @@ class __classifier:
             List[str]: The list of classes
         """
         return self.__mlb.classes_
+
+    def confusion_mat(self, X, y) -> tuple[int, int, int, int]:
+        """Return the list of classes that the classifier is trained to predict
+
+        Returns:
+            List[str]: The list of classes
+        """
+        y_test = self.__mlb.transform(y)
+        pred = self.__model.predict(X)
+        tn, fp, fn, tp = confusion_matrix(y_test, pred).ravel()
+        return tn, fp, fn, tp
 
 
 __model = __classifier()

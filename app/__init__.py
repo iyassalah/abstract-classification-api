@@ -7,3 +7,4 @@ from .dependancies import *
 from .docparser import *
 from .models import *
 from .routers import *
+from .stats import *

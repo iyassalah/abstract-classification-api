@@ -6,6 +6,7 @@ from .admin import admin, create_root_admin
 from .database import setup_db_indexes
 from .routers import auth, batch, interactive, classes
 from .crud import populate_classes
+from .stats import evalutate_classifier
 
 app = FastAPI(swagger_ui_parameters={"displayRequestDuration": True})
 
@@ -32,6 +33,7 @@ async def startup_event():
     setup_db_indexes()
     create_root_admin()
     populate_classes()
+    await evalutate_classifier()
 
 
 @app.get("/")

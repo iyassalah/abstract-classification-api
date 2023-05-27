@@ -4,13 +4,13 @@ from bson import ObjectId
 from fastapi import APIRouter, HTTPException
 
 from ..database import db
-from ..schema import Hyperparameter
+from ..schema import HyperparameterSchema
 
 router = APIRouter(prefix="/Hyperparameter")
 
 
 @router.post("/hyperparameter")
-async def create_hyperparameter(hyperparameter: Hyperparameter):
+async def create_hyperparameter(hyperparameter: HyperparameterSchema):
     """_summary_
 
     Args:
@@ -19,7 +19,7 @@ async def create_hyperparameter(hyperparameter: Hyperparameter):
     Returns:
       id: (objectId): an ObjectId refered to the inserted hyperparameter.
     """
-    result = db.hyperparameters.insert_one(hyperparameter.dict())
+    result = db.hyperparameters.insert_one(hyperparameter)
     return {"id": str(result.inserted_id)}
 
 
